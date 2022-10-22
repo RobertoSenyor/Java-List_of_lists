@@ -1,6 +1,7 @@
 # Java-Lab1--
 
-Для запуска теста немобходимо настроить IDE для запуска файла Test.java
+Для запуска теста немобходимо настроить IDE для запуска файла "Test.java".
+
 В InellijIDEA это выглядит так:
 
 ![image](https://user-images.githubusercontent.com/72248636/197327885-d2987261-222f-475c-b744-f8205e674d3d.png)
