@@ -120,12 +120,6 @@ public class BigList<T> implements Serializable
     {
         SmallList buf_result = head.item;
 
-//        if(count==1)
-//        {
-//            System.err.println("BigList (remove_on_position): your BigList have only so lone element");
-//            System.err.println("Can u add another item in future?");
-//        }
-
         if(head != null)
         {
             head = head.next;
@@ -220,12 +214,6 @@ public class BigList<T> implements Serializable
         BigListNode prev = null;
         BigListNode cur = head;
 
-//        if(count==1)
-//        {
-//            System.err.println("BigList (remove_on_position): your BigList have only so lone element");
-//            System.err.println("Can u add another item in future?");
-//        }
-
         if(_pos > get_count() || _pos <= 0)
         {
             System.err.println("BigList (remove_on_position): u write wrong position " + _pos);
@@ -261,12 +249,6 @@ public class BigList<T> implements Serializable
     public T remove_item_on_position(int logical_position)
     {
         int[] physycal_position = get_physical_pos(logical_position);
-
-//        if(get_on_position(physycal_position[0]).get_count() == 1)
-//        {
-//            System.err.println("SmallList (remove_on_position): your SmallList have only so lone element");
-//            System.err.println("Can u add another item in future?");
-//        }
 
         if(logical_position <= 0 || logical_position > physycal_position[2])
         {
