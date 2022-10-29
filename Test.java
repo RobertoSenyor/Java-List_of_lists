@@ -1,92 +1,212 @@
+import Types.Dot2D;
+import Types.Int;
+
+import java.io.FileNotFoundException;
 import java.util.Vector;
 
-public class Test
-{
-    public static void main(String[] args)
-    {
-        BigList<Integer> BigList = new BigList<>();
+public class Test {
+    public static void main(String[] args) throws Exception {
+        testInt();
+        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
+        testProperFraction();
+    }
+
+    private static void testInt() throws Exception {
+
+        System.out.println("+==============+");
+        System.out.println("| TEST INTEGER |");
+        System.out.println("+==============+");
+
+        BigList Biglist = new BigList();
 
         System.out.println("\n-----generate data-----");
-        for (int j = 0; j < 3; j++)
-        {
-            BigList.push(new SmallList<Integer>());
 
-            for (int i = 0; i < 3; i++)
-            {
-                BigList.push(((int) (Math.random() * ((10 - 1) + 1)) + 1) + 1);
+        for (int j = 0; j < 3; j++) {
+            Biglist.push(new SmallList());
+
+            for (int i = 0; i < 3; i++) {
+                int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                Biglist.push(new Int(value));
             }
         }
-        BigList.print_List();
+        Biglist.print_list();
 
         System.out.println("\n------pushed list------");
-        BigList.push(777);
-        BigList.push(777);
-        BigList.push(777);
-        BigList.print_List();
+        int value = 777;
+        Biglist.push(new Int(value));
+        Biglist.push(new Int(value));
+        Biglist.push(new Int(value));
+        Biglist.print_list();
 
         System.out.println("\n------remove list------");
-        BigList.remove_from_head();
-        BigList.print_List();
+        Biglist.remove_from_head();
+        Biglist.print_list();
 
         System.out.println("\n------remove item from head list------");
-        BigList.remove_item_from_head();
-        BigList.print_List();
+        Biglist.remove_item_from_head();
+        Biglist.print_list();
 
         System.out.println("\n------pushed in head list------");
-        BigList.push_to_head(777);
-        BigList.push_to_head(777);
-        BigList.push_to_head(777);
-        BigList.print_List();
+        Biglist.push_to_head(new Int(value));
+        Biglist.push_to_head(new Int(value));
+        Biglist.push_to_head(new Int(value));
+        Biglist.print_list();
 
         System.out.println("\n------insert in position list------");
-        BigList.insert_item_on_position(123, 3);
-        BigList.insert_item_on_position(123, 8);
-        BigList.insert_item_on_position(123, 9);
-        BigList.print_List();
+        Biglist.insert_item_on_position(3, new Int(123));
+        Biglist.insert_item_on_position(8, new Int(123));
+        Biglist.insert_item_on_position(6, new Int(123));
+        Biglist.print_list();
 
-        System.out.println("\n------remove in position list------");
-        BigList.remove_item_on_position(3);
-        BigList.remove_item_on_position(7);
-        BigList.remove_item_on_position(7);
-        BigList.print_List();
+        System.out.println("\n------remove in position 3, 5, 7 list------");
+        Biglist.remove_item_on_position(3);
+        Biglist.remove_item_on_position(5);
+        Biglist.remove_item_on_position(7);
+        Biglist.print_list();
 
         System.out.println("\n------get in position list------");
-        System.out.println("logical position "+1+": " + BigList.get_item_on_position(1));
-        System.out.println("logical position "+4+": " + BigList.get_item_on_position(4));
-        System.out.println("logical position "+7+": " + BigList.get_item_on_position(7));
+        System.out.println("logical position " + 1 + ": " + Biglist.get_item_on_position(1));
+        System.out.println("logical position " + 4 + ": " + Biglist.get_item_on_position(4));
+        System.out.println("logical position " + 7 + ": " + Biglist.get_item_on_position(7));
         System.out.println("");
-        BigList.print_List();
+        Biglist.print_list();
 
         System.out.println("\n------change in position=2 list------");
-        BigList.print_List();
-        BigList.change_item_on_pos(888, 2);
+        Biglist.print_list();
+        Biglist.change_item_on_pos(2, new Int(888));
         System.out.println();
-        BigList.print_List();
+        Biglist.print_list();
 
         System.out.println("\n------balance list (balance column 2)------");
-        BigList.print_List();
-        BigList.balance_list(2);
+        Biglist.print_list();
+        Biglist.balance_list(2);
         System.out.println();
-        BigList.print_List();
+        Biglist.print_list();
 
         System.out.println("\n------sort list------");
-        BigList.print_List();
-        BigList.sort_list();
+        Biglist.print_list();
+        Biglist.sort_list();
         System.out.println();
-        BigList.print_List();
+        Biglist.print_list();
 
         System.out.println("\n------balance list (balance column 4)------");
-        BigList.print_List();
-        BigList.balance_list(4);
+        Biglist.print_list();
+        Biglist.balance_list(4);
         System.out.println();
-        BigList.print_List();
+        Biglist.print_list();
 
-        System.out.println("\n------iterator test------");
-        IteratorList it = new IteratorList(BigList);
+        System.out.println("\n------Serialization: saving------");
+        Serializator.saveToFile(Biglist, "test_int.txt", UserFactory.get_type_name_list().get(0));
+        System.out.println("\n------Serialization: loading------");
+        BigList newBiglist = Serializator.loadFile("test_int.txt");
 
-        while (it.hasNext())
-        {
-            System.out.println(it.get_num_of_item() + ": " + it.next());
+        System.out.println("");
+        newBiglist.forEach(System.out::print);
+        System.out.println("");
+
+        System.out.println("\n+==================+");
+        System.out.println("| END TEST INTEGER |");
+        System.out.println("+==================+");
+    }
+
+    private static void testProperFraction() throws Exception {
+
+        System.out.println("+==============+");
+        System.out.println("| TEST POINT2D |");
+        System.out.println("+==============+");
+
+        BigList Biglist = new BigList();
+
+        System.out.println("\n-----generate data-----");
+
+        for (int j = 0; j < 3; j++) {
+            Biglist.push(new SmallList());
+
+            for (int i = 0; i < 3; i++) {
+                int x = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                int y = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                Biglist.push(new Dot2D(x, y));
+            }
         }
+        Biglist.print_list();
+
+        System.out.println("\n------pushed list------");
+        int x = 77;
+        int y = 7;
+        Biglist.push(new Dot2D(x, y));
+        Biglist.push(new Dot2D(x, y));
+        Biglist.push(new Dot2D(x, y));
+        Biglist.print_list();
+
+        System.out.println("\n------remove list------");
+        Biglist.remove_from_head();
+        Biglist.print_list();
+
+        System.out.println("\n------remove item from head list------");
+        Biglist.remove_item_from_head();
+        Biglist.print_list();
+
+        System.out.println("\n------pushed in head list------");
+        Biglist.push_to_head(new Dot2D(x, y));
+        Biglist.push_to_head(new Dot2D(x, y));
+        Biglist.push_to_head(new Dot2D(x, y));
+        Biglist.print_list();
+
+        System.out.println("\n------insert in position list------");
+        Biglist.insert_item_on_position(3, new Dot2D(123, 321));
+        Biglist.insert_item_on_position(8, new Dot2D(123, 321));
+        Biglist.insert_item_on_position(6, new Dot2D(123, 321));
+        ;
+        Biglist.print_list();
+
+        System.out.println("\n------remove in position 3, 5, 7 list------");
+        Biglist.remove_item_on_position(3);
+        Biglist.remove_item_on_position(5);
+        Biglist.remove_item_on_position(7);
+        Biglist.print_list();
+
+        System.out.println("\n------get in position list------");
+        System.out.println("logical position " + 1 + ": " + Biglist.get_item_on_position(1));
+        System.out.println("logical position " + 4 + ": " + Biglist.get_item_on_position(4));
+        System.out.println("logical position " + 7 + ": " + Biglist.get_item_on_position(7));
+        System.out.println("");
+        Biglist.print_list();
+
+        System.out.println("\n------change in position=2 list------");
+        Biglist.print_list();
+        Biglist.change_item_on_pos(2, new Dot2D(88, 8));
+        System.out.println();
+        Biglist.print_list();
+
+        System.out.println("\n------balance list (balance column 2)------");
+        Biglist.print_list();
+        Biglist.balance_list(2);
+        System.out.println();
+        Biglist.print_list();
+
+        System.out.println("\n------sort list------");
+        Biglist.print_list();
+        Biglist.sort_list();
+        System.out.println();
+        Biglist.print_list();
+
+        System.out.println("\n------balance list (balance column 4)------");
+        Biglist.print_list();
+        Biglist.balance_list(4);
+        System.out.println();
+        Biglist.print_list();
+
+        System.out.println("\n------Serialization: saving------");
+        Serializator.saveToFile(Biglist, "test_point2d.txt", UserFactory.get_type_name_list().get(1));
+        System.out.println("\n------Serialization: loading------");
+        BigList newBiglist = Serializator.loadFile("test_point2d.txt");
+
+        System.out.println("");
+        newBiglist.forEach(System.out::print);
+        System.out.println("");
+
+        System.out.println("\n+==================+");
+        System.out.println("| END TEST POINT2D |");
+        System.out.println("+==================+");
     }
 }

@@ -1,19 +1,16 @@
+import Types.UserType;
+
 import java.io.*;
 import java.util.Vector;
 import java.util.ArrayList;
 
-public class BigList<T> implements Serializable
+public class BigList implements List_action
 {
     private int count;            // количество элементов списка
-    private BigListNode head = null; // первый элемент списка
-    private BigListNode tail = null; // последний элемент списка
+    private BigListNode head; // первый элемент списка
+    private BigListNode tail; // последний элемент списка
 
-    public BigListNode get_head()
-    {
-        return head;
-    }
-
-    class BigListNode implements Serializable
+    class BigListNode
     {
         private SmallList item;        // данные узла списка
         private BigListNode next; // указатель на след. узел
@@ -33,34 +30,37 @@ public class BigList<T> implements Serializable
         {
             return (item != null) ? item : null;
         }
-
-        public String get_type_value()
-        {
-            /*System.out.println(item.getClass().getSimpleName());*/
-            return (item.getClass().getSimpleName());
-        }
-
-        public Object clone()
-        {
-            BigListNode clone = this;
-            return clone;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "BigListNode<T>{" +
-                    "item=" + item +
-                    ", next=" + next +
-                    "}";
-        }
     };
 
-    public BigList() {} // создание пустого списка
+    @Override
+    public BigListNode get_head()
+    {
+        return head;
+    }
+
+    @Override
+    public BigListNode get_tail()
+    {
+        return tail;
+    }
+
+    public BigList()
+    {
+        count = 0;
+        head = tail = null;
+    } // создание пустого списка
 
     public BigList(final BigList _list) // конструктор копирования
     {
         push(_list);
+    }
+
+    public BigList(UserType[] arr)
+    {
+        for (int i = 0; i < arr.length; i++)
+        {
+            push(arr[i]);
+        }
     }
 
     private void push(final BigList _list) // добавление в конец списка (для конструктора копирования)
@@ -88,12 +88,16 @@ public class BigList<T> implements Serializable
         count++;
     }
 
-    public void push(T _item) // добавление в конец списка
+    public void push(UserType _item) // добавление в конец списка
     {
+        if(tail==null)
+        {
+            push(new SmallList());
+        }
         tail.get_value().push(_item);
     }
 
-    public void push_to_head(SmallList _item) // добавление в начало списка
+    private void push_to_head(SmallList _item) // добавление в начало списка
     {
         BigListNode newnode = new BigListNode(_item, head);
 
@@ -106,15 +110,17 @@ public class BigList<T> implements Serializable
         count++;
     }
 
-    public void push_to_head(T _item) // добавление в начало списка
+    public void push_to_head(UserType _item) // добавление в начало списка
     {
         head.get_value().push_to_head(_item);
     }
 
-    public T remove_item_from_head()
+    @Override
+    public UserType remove_item_from_head()
     {
-        return (T) head.get_value().remove_item_from_head();
+        return head.get_value().remove_item_from_head();
     }
+
 
     public SmallList remove_from_head()
     {
@@ -133,7 +139,58 @@ public class BigList<T> implements Serializable
         }
     }
 
-    public boolean insert_on_position(SmallList _item, int _pos)
+    private SmallList remove_on_position(int _pos)
+    {
+        BigListNode prev = null;
+        BigListNode cur = head;
+
+        if(_pos > get_count() || _pos <= 0)
+        {
+            System.err.println("BigList (remove_on_position): u write wrong position " + _pos);
+            System.err.println("Need 1-" + get_count());
+            return null;
+        }
+
+        SmallList buf_cur = null;
+
+        for (int buf_pos = 1 ; buf_pos <= count; prev = cur, cur = cur.next, buf_pos++)
+        {
+            if (buf_pos == _pos)
+            {
+                if (cur == head)
+                {
+                    buf_cur = cur.get_value();
+                    remove_from_head();
+                    break;
+                }
+                else
+                {
+                    buf_cur = cur.get_value();
+                    prev.next = cur.next;
+                    cur = null;
+                    count--;
+                    break;
+                }
+            }
+        }
+        return buf_cur;
+    }
+
+    public UserType remove_item_on_position(int logical_position)
+    {
+        int[] physycal_position = get_physical_pos(logical_position);
+
+        if (logical_position <= 0 || logical_position > inner_count())
+        {
+            System.err.println("BigList (insert_on_position): you write wrong position " + logical_position);
+            System.err.println("Need log_pos > 0");
+            return null;
+        }
+
+        return get_on_position(physycal_position[0]).remove_item_on_position(physycal_position[1]);
+    }
+
+    private boolean insert_on_position(int _pos, SmallList _item)
     {
         BigListNode prev = null;
         BigListNode cur = head;
@@ -174,18 +231,18 @@ public class BigList<T> implements Serializable
         }
     }
 
-    public boolean insert_item_on_position(T _item, int logical_position)
+    public boolean insert_item_on_position(int logical_position, UserType _item)
     {
         int[] physycal_position = get_physical_pos(logical_position);
 
-        if (logical_position <= 0 || logical_position > physycal_position[2])
+        if (logical_position <= 0)
         {
-            System.err.println("BigList (insert_on_position): u write wrong position " + logical_position);
-            System.err.println("Need 1-" + physycal_position[0]*physycal_position[1]);
+            System.err.println("BigList (insert_on_position): you write wrong position " + logical_position);
+            System.err.println("Need log_pos > 0");
             return false;
         }
 
-        if (physycal_position[0] == get_count() + 1)
+        if (logical_position >= inner_count())
         {
             push(_item);
             return true;
@@ -201,7 +258,7 @@ public class BigList<T> implements Serializable
         {
             if (buf_pos == physycal_position[0])
             {
-                get_on_position(physycal_position[0]).insert_item_on_position(_item, physycal_position[1]);
+                get_on_position(physycal_position[0]).insert_item_on_position(physycal_position[1], _item);
                 return true;
             }
         }
@@ -209,58 +266,7 @@ public class BigList<T> implements Serializable
         return false;
     }
 
-    public SmallList remove_on_position(int _pos)
-    {
-        BigListNode prev = null;
-        BigListNode cur = head;
-
-        if(_pos > get_count() || _pos <= 0)
-        {
-            System.err.println("BigList (remove_on_position): u write wrong position " + _pos);
-            System.err.println("Need 1-" + get_count());
-            return null;
-        }
-
-        SmallList buf_cur = null;
-
-        for (int buf_pos = 1 ; buf_pos <= count; prev = cur, cur = cur.next, buf_pos++)
-        {
-            if (buf_pos == _pos)
-            {
-                if (cur == head)
-                {
-                    buf_cur = cur.get_value();
-                    remove_from_head();
-                    break;
-                }
-                else
-                {
-                    buf_cur = cur.get_value();
-                    prev.next = cur.next;
-                    cur = null;
-                    count--;
-                    break;
-                }
-            }
-        }
-        return buf_cur;
-    }
-
-    public T remove_item_on_position(int logical_position)
-    {
-        int[] physycal_position = get_physical_pos(logical_position);
-
-        if(logical_position <= 0 || logical_position > physycal_position[2])
-        {
-            System.err.println("SmallList (remove_on_position): u write wrong position " + logical_position);
-            System.err.println("Need 1-" + physycal_position[0]*physycal_position[1]);
-            return null;
-        }
-
-        return (T) get_on_position(physycal_position[0]).remove_item_on_position(physycal_position[1]);
-    }
-
-    public SmallList get_on_position(int _pos)
+    private SmallList get_on_position(int _pos)
     {
         BigListNode cur = head;
 
@@ -280,20 +286,23 @@ public class BigList<T> implements Serializable
         return cur.get_value();
     }
 
-    public T get_item_on_position(int logical_position)
+    @Override
+    public UserType get_item_on_position(int logical_position)
     {
         int[] physycal_position = get_physical_pos(logical_position);
 
-        if(logical_position <= 0 || logical_position > physycal_position[2])
+        if (logical_position <= 0 || logical_position > inner_count())
         {
-            System.err.println("SmallList (get_on_position): u write wrong position " + logical_position);
-            System.err.println("Need 1-" + physycal_position[0]*physycal_position[1]);
+            System.err.println("BigList (insert_on_position): you write wrong position " + logical_position);
+            System.err.println("Need log_pos > 0");
+            return null;
         }
 
-        return (T) get_on_position(physycal_position[0]).get_item_on_position(physycal_position[1]);
+        return get_on_position(physycal_position[0]).get_item_on_position(physycal_position[1]);
     }
 
-    public void print_List()
+    @Override
+    public void print_list()
     {
         for (int i = 1; i <= count; i++)
         {
@@ -301,19 +310,21 @@ public class BigList<T> implements Serializable
         }
     }
 
-    public Object change_item_on_pos(T _new_value, int logical_position)
+    @Override
+    public boolean change_item_on_pos(int logical_position, UserType _new_value)
     {
-        int[] physycal_position = get_physical_pos(logical_position);
+        return (get_item_on_position(logical_position).parse_value(_new_value.toString()))!=null;
+    }
 
-        if(logical_position <= 0)
+    private int inner_count()
+    {
+        int big_count = 0;
+
+        for (int i = 1; i <= count; i++)
         {
-            System.err.println("SmallList (change_nodeList_on_pos): u write wrong position " + logical_position);
-            System.err.println("Need 1-" + physycal_position[0]*physycal_position[1]);
-            return null;
+            big_count+=get_on_position(i).get_count();
         }
-
-        get_on_position(physycal_position[0]).change_item_on_pos(_new_value, physycal_position[1]);
-        return null;
+        return big_count;
     }
 
     public int get_count()
@@ -322,18 +333,17 @@ public class BigList<T> implements Serializable
         return buf_count;
     }
 
-    private void comp_and_swap(Vector arr, int _i, int _j, int _direction)
+    private void comp_and_swap(UserType obj, Vector arr, int _i, int _j, int _direction)
     {
-        if (((Integer)arr.get(_i) > (Integer)arr.get(_j) && _direction == 1)
-                                            ||
-             ((Integer)arr.get(_i) < (Integer)arr.get(_j) && _direction == 0))
+        if (((obj.get_type_Comparator().compare(arr.get(_i),arr.get(_j)) == 1) && _direction == 1)
+                                                ||
+            ((obj.get_type_Comparator().compare(arr.get(_i),arr.get(_j)) == -1) && _direction == 0))
         {
-            Integer temp_i = (Integer) arr.get(_i);
-            Integer temp_j = (Integer) arr.get(_j);
+            UserType buf_i = (UserType) arr.get(_i);
+            UserType buf_j = (UserType) arr.get(_j);
 
-            arr.remove(_i); arr.insertElementAt(temp_j, _i);
-
-            arr.remove(_j); arr.insertElementAt(temp_i, _j);
+            arr.remove(_i); arr.insertElementAt(buf_j, _i);
+            arr.remove(_j); arr.insertElementAt(buf_i, _j);
         }
     }
 
@@ -345,7 +355,7 @@ public class BigList<T> implements Serializable
 
             for (int i = _low; i < _low + _buf_count; i++)
             {
-                comp_and_swap(arr, i, i + _buf_count, _direction);
+                comp_and_swap((UserType) arr.get(i), arr, i, i + _buf_count, _direction);
             }
             bitonic_merge(arr, _low, _buf_count, _direction);
             bitonic_merge(arr, _low + _buf_count, _buf_count, _direction);
@@ -367,19 +377,14 @@ public class BigList<T> implements Serializable
 
     public void sort_list()
     {
+        String type_data = get_head().item.get_item_on_position(1).type_name();
         Vector arr = new Vector();
         Vector size_of_node = new Vector();
-
-        int logical_pos = 1;
 
         for (int i = 1; i <= count; i++)
         {
             size_of_node.add(get_on_position(i).get_count());
-
-            for (int j = 1; j <= get_on_position(i).get_count(); j++, logical_pos++)
-            {
-                arr.add(get_item_on_position(logical_pos));
-            }
+            arr.addAll(get_on_position(i).to_array());
         }
 
         if(((arr.size() > 0) && ((arr.size() & (arr.size() - 1)) == 0))) // если количество элементов кратно степени 2ки
@@ -393,11 +398,13 @@ public class BigList<T> implements Serializable
 
             while (!((arr.size() & (arr.size() - 1)) == 0))
             {
-                arr.add(1); // добавление фиктивных элементов для получения нужной размерности (количество элементов кратно степени 2ки)
+                arr.add(UserFactory.get_builder_by_name(type_data)); // добавление фиктивных элементов для получения нужной размерности (количество элементов кратно степени 2ки)
                 to_remove_buf_elements++;
             }
 
             size_of_node.add(arr.size()-buf_size);
+
+//            System.out.println(arr);
 
             bitonic_sort(arr, 0, arr.size(), 1);
 
@@ -408,21 +415,48 @@ public class BigList<T> implements Serializable
 
             size_of_node.remove(size_of_node.size()-1);
 
-            remove_List();
+            remove_list();
         }
 
         for (int i = 0; i < size_of_node.size(); i++)
         {
-            push(new SmallList<>());
+            push(new SmallList());
 
             for (int j = 0; j < (Integer) size_of_node.get(i); j++)
             {
-                tail.get_value().push((T) arr.firstElement());
+                tail.get_value().push((UserType) arr.firstElement());
                 arr.remove(arr.firstElement());
             }
         }
     }
 
+    public void forEach(DoWith action)
+    {
+        ArrayList arr = new ArrayList<>(to_array_inner());
+
+        for (int i = 0; i < arr.size(); i++) {
+
+            String str;
+
+            if (arr.get(i) == null) str = "null ";
+            else str = arr.get(i).toString() + " ";
+            action.doWith(str);
+        }
+    }
+
+    private ArrayList to_array_inner()
+    {
+        ArrayList<Object> arrayList = new ArrayList<>();
+
+        for (int i = 1; i <= count; i++)
+        {
+            arrayList.addAll(get_on_position(i).to_array());
+        }
+
+        return  arrayList;
+    }
+
+    @Override
     public ArrayList to_array()
     {
         ArrayList<Object> array = new ArrayList<>();
@@ -441,82 +475,56 @@ public class BigList<T> implements Serializable
         }
     }
 
-    public void export_serialize()
-    {
-        try{
-            FileOutputStream fos = new FileOutputStream("test.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(this);
-        }
-        catch (Exception ex)
-        {}
-    }
-
-    public void import_serialize()
-    {
-        BigList<SmallList> buf_list = new BigList<SmallList>();
-
-        try{
-            FileInputStream fis = new FileInputStream("test.dat");
-            ObjectInputStream iis = new ObjectInputStream(fis);
-            buf_list = (BigList<SmallList>) iis.readObject();
-        }
-        catch (Exception ex)
-        {}
-
-        push(buf_list);
-    }
-
     private int[] get_physical_pos(int _pos)
     {
-        int[] pos = new int[3];
+        int[] pos = new int[2];
 
-        for (int i = 1, logical_pos = 1; i <= count; i++)
+        for (int i = 1; i <= count; i++)
         {
-            for (int j = 1; j <= get_on_position(i).get_count(); j++, logical_pos++)
+            if(_pos <= get_on_position(i).get_count())
             {
-                if(_pos == logical_pos)
-                {
-                    pos = new int[]{i, j, 0};
-                }
+                pos = new int[]{i, _pos};
+                break;
             }
-            pos[2] = logical_pos;
+            else
+            {
+                _pos-=get_on_position(i).get_count();
+            }
         }
         return pos;
     }
 
     public void balance_list(int for_balance_count)
     {
-        Vector arr = new Vector();
-
-        int logical_pos = 1;
+        Vector size_of_node = new Vector();
+        Vector arr = new Vector<>();
 
         for (int i = 1; i <= count; i++)
         {
-            for (int j = 1; j <= get_on_position(i).get_count(); j++, logical_pos++)
-            {
-                arr.add(get_item_on_position(logical_pos));
-            }
+            size_of_node.add(get_on_position(i).get_count());
         }
 
-        remove_List();
+        arr.addAll(to_array_inner());
+
+        remove_list();
 
         while (arr.size() > 0)
         {
-            push(new SmallList<>());
+            push(new SmallList());
 
             for (int i = 0; i < for_balance_count; i++)
             {
                 if(arr.size()==0)
                     break;
 
-                tail.get_value().push((T) arr.firstElement());
+                tail.get_value().push((UserType) arr.firstElement());
                 arr.remove(arr.firstElement());
             }
         }
     }
 
-    public void remove_List()
+    @Override
+    public void remove_list()
     {
         while (count!=0)
         {

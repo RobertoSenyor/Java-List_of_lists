@@ -1,18 +1,19 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import Types.UserType;
 
-public class SmallList<T> extends BigList
+public class SmallList implements List_action
 {
     private int count;            // количество элементов списка
-    private SmallListNode head = null; // первый элемент списка
-    private SmallListNode tail = null; // последний элемент списка
+    private SmallListNode head; // первый элемент списка
+    private SmallListNode tail; // последний элемент списка
 
-    private class SmallListNode<T> implements Serializable
+    private class SmallListNode
     {
-        private T item;        // данные узла списка
+        private UserType item;        // данные узла списка
         private SmallListNode next; // указатель на след. узел
 
-        public SmallListNode(T _item, SmallListNode _next)
+        public SmallListNode(UserType _item, SmallListNode _next)
         {
             item = _item;
             next = _next;
@@ -23,60 +24,32 @@ public class SmallList<T> extends BigList
             return next;
         }
 
-        public T get_value()
+        public UserType get_value()
         {
             return (item != null) ? item : null;
         }
 
-        public String get_type_value()
-        {
-            /*System.out.println(item.getClass().getSimpleName());*/
-            return (item.getClass().getSimpleName());
-        }
-
-        public Object clone()
-        {
-            SmallListNode clone = this;
-            return clone;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "SmallListNode<T>{" +
-                    "item=" + item +
-                    ", next=" + next +
-                    "}";
-        }
     };
 
-    public SmallList() {}
-
-    public SmallList(final SmallList _list)
+    public SmallList()
     {
-        push(_list);
+        count = 0;
+        head = tail = null;
     }
 
     @Override
-    public void push(SmallList _item)
+    public SmallListNode get_head()
     {
-        SmallListNode newnode = new SmallListNode(_item, null);
-
-        if(tail == null)
-        {
-            head = newnode;
-        }
-        else
-        {
-            tail.next = newnode;
-        }
-
-        tail = newnode;
-        count++;
+        return head;
     }
 
     @Override
-    public void push(Object _item)
+    public SmallListNode get_tail()
+    {
+        return tail;
+    }
+
+    public void push(UserType _item)
     {
         SmallListNode newnode = new SmallListNode(_item, null);
 
@@ -93,15 +66,9 @@ public class SmallList<T> extends BigList
         count++;
     }
 
-    @Override
-    public void push_to_head(SmallList _item) {
-        super.push_to_head(_item);
-    }
-
-    @Override
-    public void push_to_head(Object _item)
+    public void push_to_head(UserType _item)
     {
-        SmallListNode newnode = new SmallListNode<>(_item, head);
+        SmallListNode newnode = new SmallListNode(_item, head);
 
         if(head==null)
         {
@@ -112,43 +79,7 @@ public class SmallList<T> extends BigList
         count++;
     }
 
-    @Override
-    public T remove_item_from_head() {
-
-        T buf_item = (T) head.get_value();
-
-        if (count == 1)
-        {
-            System.err.println("SmallList (remove_on_position): your SmallList have only so lone element");
-            System.err.println("Can u add another item in future?");
-        }
-
-        if(head != null)
-        {
-            head = head.next;
-            count --;
-            return buf_item;
-        }
-        else
-        {
-            System.out.println("Error: can't delete *HEAD* element");
-            return null;
-        }
-    }
-
-    @Override
-    public SmallList remove_from_head()
-    {
-        return super.remove_from_head();
-    }
-
-    @Override
-    public boolean insert_on_position(SmallList _item, int _pos) {
-        return super.insert_on_position(_item, _pos);
-    }
-
-    @Override
-    public boolean insert_item_on_position(Object _item, int logical_position)
+    public boolean insert_item_on_position( int logical_position, UserType _item)
     {
         SmallListNode prev = null;
         SmallListNode cur = head;
@@ -189,13 +120,30 @@ public class SmallList<T> extends BigList
         }
     }
 
-    @Override
-    public SmallList remove_on_position(int _pos) {
-        return super.remove_on_position(_pos);
+    public UserType remove_item_from_head() {
+
+        UserType buf_item = (UserType) head.get_value();
+
+        if (count == 1)
+        {
+            System.err.println("SmallList (remove_on_position): your SmallList have only so lone element");
+            System.err.println("Can u add another item in future?");
+        }
+
+        if(head != null)
+        {
+            head = head.next;
+            count --;
+            return buf_item;
+        }
+        else
+        {
+            System.out.println("Error: can't delete *HEAD* element");
+            return null;
+        }
     }
 
-    @Override
-    public T remove_item_on_position(int logical_position)
+    public UserType remove_item_on_position(int logical_position)
     {
         SmallListNode prev = null;
         SmallListNode cur = head;
@@ -213,7 +161,7 @@ public class SmallList<T> extends BigList
             return null;
         }
 
-        T buf_cur = null;
+        UserType buf_cur = null;
 
         for (int buf_pos = 1 ; buf_pos <= count; prev = cur, cur = cur.next, buf_pos++)
         {
@@ -221,13 +169,13 @@ public class SmallList<T> extends BigList
             {
                 if (cur == head)
                 {
-                    buf_cur = (T) cur.get_value();
-                    remove_from_head();
+                    buf_cur = cur.get_value();
+                    remove_item_from_head();
                     break;
                 }
                 else
                 {
-                    buf_cur = (T) cur.get_value();
+                    buf_cur = cur.get_value();
                     prev.next = cur.next;
                     cur = null;
                     count--;
@@ -239,12 +187,7 @@ public class SmallList<T> extends BigList
     }
 
     @Override
-    public SmallList get_on_position(int _pos) {
-        return super.get_on_position(_pos);
-    }
-
-    @Override
-    public T get_item_on_position(int logical_position)
+    public UserType get_item_on_position(int logical_position)
     {
         SmallListNode cur = head;
 
@@ -258,19 +201,14 @@ public class SmallList<T> extends BigList
         {
             if (buf_pos == logical_position)
             {
-                return (T) cur.get_value();
+                return cur.get_value();
             }
         }
-        return (T) cur.get_value();
+        return cur.get_value();
     }
 
-    @Override
-    public void print_List() {
-        super.print_List();
-    }
 
-    @Override
-    public Object change_item_on_pos(Object _new_value, int logical_position)
+    public boolean change_item_on_pos(int logical_position, UserType _new_value)
     {
         SmallListNode cur = head;
 
@@ -278,6 +216,7 @@ public class SmallList<T> extends BigList
         {
             System.err.println("SmallList (get_on_position): u write wrong position " + logical_position);
             System.err.println("Need 1-" + get_count());
+            return false;
         }
 
         for (int buf_pos = 1; cur.next != null; cur = cur.next, buf_pos++)
@@ -285,23 +224,27 @@ public class SmallList<T> extends BigList
             if (buf_pos == logical_position)
             {
                 remove_item_on_position(logical_position);
-                insert_item_on_position(_new_value, logical_position);
+                insert_item_on_position(logical_position, _new_value);
                 break;
             }
         }
-        return cur.get_value();
+        return (cur.get_value())!=null;
     }
 
     @Override
-    public int get_count()
-    {
+    public void print_list() {
+
+    }
+
+    @Override
+    public int get_count() {
         return count;
     }
 
     @Override
     public ArrayList to_array()
     {
-        ArrayList<Object> array = new ArrayList<>();
+        ArrayList<UserType> array = new ArrayList<>();
 
         if (head != null)
         {
@@ -317,18 +260,29 @@ public class SmallList<T> extends BigList
         }
     }
 
-    @Override
-    public void export_serialize() {
-        super.export_serialize();
+    public UserType remove_from_head()
+    {
+        UserType buf_result = head.item;
+
+        if(head != null)
+        {
+            head = head.next;
+            count--;
+            return buf_result;
+        }
+        else
+        {
+            System.out.println("Error: can't delete *HEAD* element");
+            return null;
+        }
     }
 
     @Override
-    public void import_serialize() {
-        super.import_serialize();
-    }
+    public void remove_list() {
 
-    @Override
-    public void remove_List() {
-        super.remove_List();
+        while (count!=0)
+        {
+            remove_from_head();
+        }
     }
 }
