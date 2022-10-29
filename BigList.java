@@ -407,18 +407,27 @@ public class BigList<T> implements Serializable
         else
         {
             int buf_size = arr.size();
+            int to_remove_buf_elements = 0;
 
             while (!((arr.size() & (arr.size() - 1)) == 0))
             {
-                arr.add(((int) (Math.random() * ((10 - 1) + 1)) + 1) + 1);
+                arr.add(1); // добавление фиктивных элементов для получения нужной размерности (количество элементов кратно степени 2ки)
+                to_remove_buf_elements++;
             }
 
             size_of_node.add(arr.size()-buf_size);
 
             bitonic_sort(arr, 0, arr.size(), 1);
-        }
 
-        remove_List();
+            for (int i = 0; i < to_remove_buf_elements; i++)
+            {
+                arr.removeElementAt(0);
+            }
+
+            size_of_node.remove(size_of_node.size()-1);
+
+            remove_List();
+        }
 
         for (int i = 0; i < size_of_node.size(); i++)
         {
