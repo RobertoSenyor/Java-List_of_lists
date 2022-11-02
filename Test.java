@@ -7,7 +7,7 @@ import java.util.Vector;
 public class Test {
     public static void main(String[] args) throws Exception {
         testInt();
-        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
+        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testProperFraction();
     }
 
