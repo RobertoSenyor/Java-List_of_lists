@@ -302,12 +302,16 @@ public class BigList implements List_action
     }
 
     @Override
-    public void print_list()
+    public String print_list()
     {
+        String result = "";
+
         for (int i = 1; i <= count; i++)
         {
-            System.out.println(i + ": " + get_on_position(i).to_array());
+            result += i + ": " + get_on_position(i).to_array() + "\n";
         }
+//        System.out.println(result);
+        return result;
     }
 
     @Override
@@ -316,7 +320,7 @@ public class BigList implements List_action
         return (get_item_on_position(logical_position).parse_value(_new_value.toString()))!=null;
     }
 
-    private int inner_count()
+    public int inner_count()
     {
         int big_count = 0;
 
@@ -326,7 +330,6 @@ public class BigList implements List_action
         }
         return big_count;
     }
-
     public int get_count()
     {
         int buf_count = count;

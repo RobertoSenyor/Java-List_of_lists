@@ -7,7 +7,7 @@ public interface List_action
 {
     Object get_head();
     Object get_tail();
-    void print_list();
+    String print_list();
     int get_count();
     ArrayList to_array();
     Object remove_item_from_head();

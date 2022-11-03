@@ -232,8 +232,9 @@ public class SmallList implements List_action
     }
 
     @Override
-    public void print_list() {
+    public String print_list() {
 
+        return to_array().toString();
     }
 
     @Override
