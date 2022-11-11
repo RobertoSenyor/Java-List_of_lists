@@ -6,6 +6,7 @@ import java.util.Vector;
 
 public class Test {
     public static void main(String[] args) throws Exception {
+
         testInt();
         System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testProperFraction();
@@ -54,11 +55,13 @@ public class Test {
 
         System.out.println("\n------insert in position list------");
         Biglist.insert_item_on_position(3, new Int(123));
-        Biglist.insert_item_on_position(8, new Int(123));
         Biglist.insert_item_on_position(6, new Int(123));
+        Biglist.insert_item_on_position(8, new Int(123));
         System.out.println(Biglist.print_list());
 
         System.out.println("\n------remove in position 3, 5, 7 list------");
+        System.out.println(Biglist.print_list());
+        System.out.println("");
         Biglist.remove_item_on_position(3);
         Biglist.remove_item_on_position(5);
         Biglist.remove_item_on_position(7);

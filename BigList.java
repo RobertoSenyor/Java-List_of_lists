@@ -1,12 +1,13 @@
 import Types.UserType;
 
+import javax.swing.plaf.basic.BasicGraphicsUtils;
 import java.io.*;
 import java.util.Vector;
 import java.util.ArrayList;
 
 public class BigList implements List_action
 {
-    private int count;            // количество элементов списка
+    private int count;        // количество элементов списка
     private BigListNode head; // первый элемент списка
     private BigListNode tail; // последний элемент списка
 
@@ -178,7 +179,7 @@ public class BigList implements List_action
 
     public UserType remove_item_on_position(int logical_position)
     {
-        int[] physycal_position = get_physical_pos(logical_position);
+        Pair<SmallList, Integer> pair = get_physical_pos(logical_position);
 
         if (logical_position <= 0 || logical_position > inner_count())
         {
@@ -187,7 +188,7 @@ public class BigList implements List_action
             return null;
         }
 
-        return get_on_position(physycal_position[0]).remove_item_on_position(physycal_position[1]);
+        return pair.getList().remove_item_on_position(pair.getPos());
     }
 
     private boolean insert_on_position(int _pos, SmallList _item)
@@ -233,7 +234,7 @@ public class BigList implements List_action
 
     public boolean insert_item_on_position(int logical_position, UserType _item)
     {
-        int[] physycal_position = get_physical_pos(logical_position);
+        Pair<SmallList, Integer> pair = get_physical_pos(logical_position);
 
         if (logical_position <= 0)
         {
@@ -248,21 +249,13 @@ public class BigList implements List_action
             return true;
         }
 
-        if(physycal_position[0] == 1 && physycal_position[1] == 1)
+        if(pair.getList() == head.item && pair.getPos() == 1)
         {
             push_to_head(_item);
             return true;
         }
 
-        for (int buf_pos = 1; buf_pos <= count; buf_pos++)
-        {
-            if (buf_pos == physycal_position[0])
-            {
-                get_on_position(physycal_position[0]).insert_item_on_position(physycal_position[1], _item);
-                return true;
-            }
-        }
-
+        pair.getList().insert_item_on_position(pair.getPos(), _item);
         return false;
     }
 
@@ -289,7 +282,7 @@ public class BigList implements List_action
     @Override
     public UserType get_item_on_position(int logical_position)
     {
-        int[] physycal_position = get_physical_pos(logical_position);
+        Pair<SmallList, Integer> pair = get_physical_pos(logical_position);
 
         if (logical_position <= 0 || logical_position > inner_count())
         {
@@ -298,19 +291,23 @@ public class BigList implements List_action
             return null;
         }
 
-        return get_on_position(physycal_position[0]).get_item_on_position(physycal_position[1]);
+        return  pair.getList().get_item_on_position(pair.getPos());
     }
 
     @Override
     public String print_list()
     {
         String result = "";
+        int i = 1;
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head;; cur = cur.next, i++)
         {
-            result += i + ": " + get_on_position(i).to_array() + "\n";
+            result += i + ": " + cur.item.to_array() + "\n";
+
+            if (  cur.next == null)
+                break;
         }
-//        System.out.println(result);
+
         return result;
     }
 
@@ -324,10 +321,14 @@ public class BigList implements List_action
     {
         int big_count = 0;
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head;; cur = cur.next)
         {
-            big_count+=get_on_position(i).get_count();
+            big_count+=cur.item.get_count();
+
+            if (  cur.next == null)
+                break;
         }
+
         return big_count;
     }
     public int get_count()
@@ -384,11 +385,20 @@ public class BigList implements List_action
         Vector arr = new Vector();
         Vector size_of_node = new Vector();
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head;; cur = cur.next)
         {
-            size_of_node.add(get_on_position(i).get_count());
-            arr.addAll(get_on_position(i).to_array());
+            size_of_node.add(cur.item.get_count());
+            arr.addAll(cur.item.to_array());
+
+            if (  cur.next == null)
+                break;
         }
+//
+//        for (int i = 1; i <= count; i++)
+//        {
+//            size_of_node.add(get_on_position(i).get_count());
+//            arr.addAll(get_on_position(i).to_array());
+//        }
 
         if(((arr.size() > 0) && ((arr.size() & (arr.size() - 1)) == 0))) // если количество элементов кратно степени 2ки
         {
@@ -451,9 +461,9 @@ public class BigList implements List_action
     {
         ArrayList<Object> arrayList = new ArrayList<>();
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head; cur != null; cur = cur.next)
         {
-            arrayList.addAll(get_on_position(i).to_array());
+            arrayList.addAll(cur.item.to_array());
         }
 
         return  arrayList;
@@ -478,23 +488,24 @@ public class BigList implements List_action
         }
     }
 
-    private int[] get_physical_pos(int _pos)
+    private Pair<SmallList, Integer> get_physical_pos(int _pos)
     {
-        int[] pos = new int[2];
+        Pair<SmallList, Integer> pair = null;
 
         for (int i = 1; i <= count; i++)
         {
-            if(_pos <= get_on_position(i).get_count())
+            SmallList buf = get_on_position(i);
+            if(_pos <= buf.get_count())
             {
-                pos = new int[]{i, _pos};
+                pair = new Pair<>(buf, _pos);
                 break;
             }
             else
             {
-                _pos-=get_on_position(i).get_count();
+                _pos-=buf.get_count();
             }
         }
-        return pos;
+        return pair;
     }
 
     public void balance_list(int for_balance_count)
@@ -502,9 +513,12 @@ public class BigList implements List_action
         Vector size_of_node = new Vector();
         Vector arr = new Vector<>();
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head;; cur = cur.next)
         {
-            size_of_node.add(get_on_position(i).get_count());
+            size_of_node.add(cur.item.get_count());
+
+            if (  cur.next == null)
+                break;
         }
 
         arr.addAll(to_array_inner());
