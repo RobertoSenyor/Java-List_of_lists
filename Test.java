@@ -12,8 +12,8 @@ public class Test {
 //        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
 //        testProperFraction();
 //        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
-        testTimestampSort();
-        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
+//        testTimestampSort();
+//        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testTimestampGetOnPosition();
         System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testTimestampInsertOnPosition();
@@ -43,10 +43,10 @@ public class Test {
                 }
 
                 int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-                long startTime = System.currentTimeMillis();
+                double startTime = System.nanoTime();
                 Biglist.insert_item_on_position(value, new Int());
-                long endTime = System.currentTimeMillis();
-                long duration = (endTime - startTime);
+                double endTime = System.nanoTime();
+                double duration = (endTime - startTime)/1000000;
 
                 System.out.println("----------------------------------");
                 System.out.println("Кол-во элементов: " + num_elements);
@@ -92,10 +92,10 @@ public class Test {
                 }
 
                 int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-                long startTime = System.currentTimeMillis();
+                double startTime = System.nanoTime();
                 Biglist.get_item_on_position(value);
-                long endTime = System.currentTimeMillis();
-                long duration = (endTime - startTime);
+                double endTime = System.nanoTime();
+                double duration = (endTime - startTime)/1000000;
 
                 System.out.println("----------------------------------");
                 System.out.println("Кол-во элементов: " + num_elements);
