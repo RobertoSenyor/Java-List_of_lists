@@ -383,31 +383,24 @@ public class BigList implements List_action
     {
         String type_data = get_head().item.get_item_on_position(1).type_name();
         Vector arr = new Vector();
-        Vector size_of_node = new Vector();
 
         for (BigListNode cur = head;; cur = cur.next)
         {
-            size_of_node.add(cur.item.get_count());
             arr.addAll(cur.item.to_array());
 
-            if (  cur.next == null)
+            if (cur.next == null)
                 break;
         }
-//
-//        for (int i = 1; i <= count; i++)
-//        {
-//            size_of_node.add(get_on_position(i).get_count());
-//            arr.addAll(get_on_position(i).to_array());
-//        }
 
-        if(((arr.size() > 0) && ((arr.size() & (arr.size() - 1)) == 0))) // если количество элементов кратно степени 2ки
+        int to_remove_buf_elements = 0;
+        if (((arr.size() > 0) && ((arr.size() & (arr.size() - 1)) == 0))) // если количество элементов кратно степени 2ки
         {
-            bitonic_sort(arr, 0, arr.size(),1);
+            bitonic_sort(arr, 0, arr.size(), 1);
         }
         else
         {
             int buf_size = arr.size();
-            int to_remove_buf_elements = 0;
+            to_remove_buf_elements = 0;
 
             while (!((arr.size() & (arr.size() - 1)) == 0))
             {
@@ -415,31 +408,18 @@ public class BigList implements List_action
                 to_remove_buf_elements++;
             }
 
-            size_of_node.add(arr.size()-buf_size);
-
-//            System.out.println(arr);
-
             bitonic_sort(arr, 0, arr.size(), 1);
-
-            for (int i = 0; i < to_remove_buf_elements; i++)
-            {
-                arr.removeElementAt(0);
-            }
-
-            size_of_node.remove(size_of_node.size()-1);
 
             remove_list();
         }
 
-        for (int i = 0; i < size_of_node.size(); i++)
-        {
-            push(new SmallList());
+//        System.out.println(arr.toString());
 
-            for (int j = 0; j < (Integer) size_of_node.get(i); j++)
-            {
-                tail.get_value().push((UserType) arr.firstElement());
-                arr.remove(arr.firstElement());
-            }
+        push(new SmallList());
+
+        for (int i = 0 + to_remove_buf_elements; i < arr.size(); i++) {
+
+            push((UserType) arr.get(i));
         }
     }
 
@@ -492,18 +472,20 @@ public class BigList implements List_action
     {
         Pair<SmallList, Integer> pair = null;
 
-        for (int i = 1; i <= count; i++)
+        for (BigListNode cur = head;; cur = cur.next)
         {
-            SmallList buf = get_on_position(i);
-            if(_pos <= buf.get_count())
+            if(_pos <= cur.item.get_count())
             {
-                pair = new Pair<>(buf, _pos);
+                pair = new Pair<>(cur.item, _pos);
                 break;
             }
             else
             {
-                _pos-=buf.get_count();
+                _pos-=cur.item.get_count();
             }
+
+            if (  cur.next == null)
+                break;
         }
         return pair;
     }
