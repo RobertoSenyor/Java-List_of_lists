@@ -1,7 +1,5 @@
 import Types.UserType;
 
-import javax.swing.plaf.basic.BasicGraphicsUtils;
-import java.io.*;
 import java.util.Vector;
 import java.util.ArrayList;
 
@@ -337,7 +335,7 @@ public class BigList implements List_action
         return buf_count;
     }
 
-    private void comp_and_swap(UserType obj, Vector arr, int _i, int _j, int _direction)
+    private void comp_and_swap(UserType obj, ArrayList arr, int _i, int _j, int _direction)
     {
         if (((obj.get_type_Comparator().compare(arr.get(_i),arr.get(_j)) == 1) && _direction == 1)
                                                 ||
@@ -346,12 +344,12 @@ public class BigList implements List_action
             UserType buf_i = (UserType) arr.get(_i);
             UserType buf_j = (UserType) arr.get(_j);
 
-            arr.remove(_i); arr.insertElementAt(buf_j, _i);
-            arr.remove(_j); arr.insertElementAt(buf_i, _j);
+            arr.remove(_i); arr.add(_i,buf_j);
+            arr.remove(_j); arr.add(_j,buf_i);
         }
     }
 
-    private void bitonic_merge(Vector arr, int _low, int _count, int _direction)
+    private void bitonic_merge(ArrayList arr, int _low, int _count, int _direction)
     {
         if (_count > 1)
         {
@@ -366,7 +364,7 @@ public class BigList implements List_action
         }
     }
 
-    private void bitonic_sort(Vector arr, int _low, int _count, int _direction)
+    private void bitonic_sort(ArrayList arr, int _low, int _count, int _direction)
     {
         if (_count > 1)
         {
@@ -382,7 +380,7 @@ public class BigList implements List_action
     public void sort_list()
     {
         String type_data = get_head().item.get_item_on_position(1).type_name();
-        Vector arr = new Vector();
+        ArrayList arr = new ArrayList<>();
 
         for (BigListNode cur = head;; cur = cur.next)
         {
