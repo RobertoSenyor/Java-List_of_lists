@@ -1,6 +1,8 @@
 import Types.Dot2D;
 import Types.Int;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Vector;
 
 public class Test {
@@ -10,8 +12,8 @@ public class Test {
 //        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
 //        testProperFraction();
 //        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
-//        testTimestampSort();
-//        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
+        testTimestampSort();
+        System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testTimestampGetOnPosition();
         System.out.println("\n\nSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLITSPLIT\n\n");
         testTimestampInsertOnPosition();
@@ -19,108 +21,147 @@ public class Test {
 
     private static void testTimestampInsertOnPosition()
     {
-        int num_elements = 1000;
+        try(FileWriter writer = new FileWriter("testInsertOnPos.txt", false))
+        {
+            int num_elements = 10000;
 
-        while (num_elements<=100000) {
-            BigList Biglist = new BigList();
+            while (num_elements<=50000)
+            {
+                BigList Biglist = new BigList();
 
-            System.out.println("\n-----testTimestampInsertOnPosition-----");
+                System.out.println("\n-----testTimestampSort-----");
 
-            for (int j = 0; j < 10; j++) {
-                Biglist.push(new SmallList());
+                for (int j = 0; j < 10; j++)
+                {
+                    Biglist.push(new SmallList());
 
-                for (int i = 0; i < num_elements / 10; i++) {
-                    int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-                    Biglist.push(new Int(value));
+                    for (int i = 0; i < num_elements/10; i++)
+                    {
+                        int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                        Biglist.push(new Int(value));
+                    }
                 }
+
+                int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                long startTime = System.currentTimeMillis();
+                Biglist.insert_item_on_position(value, new Int());
+                long endTime = System.currentTimeMillis();
+                long duration = (endTime - startTime);
+
+                System.out.println("----------------------------------");
+                System.out.println("Кол-во элементов: " + num_elements);
+                System.out.println("Время мс: " + duration);
+                System.out.println("----------------------------------");
+
+                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                writer.write(text);
+                writer.append('\n');
+                writer.flush();
+
+                num_elements+=500;
+                Biglist.remove_list();
             }
-
-            int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-            double startTime = System.nanoTime();
-            Biglist.insert_item_on_position(value, new Int());
-            double endTime = System.nanoTime();
-            double duration = (endTime - startTime)/1000000;
-
-            System.out.println("----------------------------------");
-            System.out.println("Кол-во элементов: " + num_elements);
-            System.out.println("Время мс: " + duration);
-            System.out.println("----------------------------------");
-
-            num_elements += 1000;
-            Biglist.remove_list();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
     private static void testTimestampGetOnPosition()
     {
-        int num_elements = 1000;
-
-        while (num_elements<=100000)
+        try(FileWriter writer = new FileWriter("testGetOnPos.txt", false))
         {
-            BigList Biglist = new BigList();
+            int num_elements = 10000;
 
-            System.out.println("\n-----testTimestampGetOnPosition-----");
-
-            for (int j = 0; j < 10; j++)
+            while (num_elements<=50000)
             {
-                Biglist.push(new SmallList());
+                BigList Biglist = new BigList();
 
-                for (int i = 0; i < num_elements/10; i++)
+                System.out.println("\n-----testTimestampSort-----");
+
+                for (int j = 0; j < 10; j++)
                 {
-                    int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-                    Biglist.push(new Int(value));
+                    Biglist.push(new SmallList());
+
+                    for (int i = 0; i < num_elements/10; i++)
+                    {
+                        int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                        Biglist.push(new Int(value));
+                    }
                 }
+
+                int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                long startTime = System.currentTimeMillis();
+                Biglist.get_item_on_position(value);
+                long endTime = System.currentTimeMillis();
+                long duration = (endTime - startTime);
+
+                System.out.println("----------------------------------");
+                System.out.println("Кол-во элементов: " + num_elements);
+                System.out.println("Время мс: " + duration);
+                System.out.println("----------------------------------");
+
+                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                writer.write(text);
+                writer.append('\n');
+                writer.flush();
+
+                num_elements+=500;
+                Biglist.remove_list();
             }
-
-            int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-            double startTime = System.nanoTime();
-            Biglist.get_item_on_position(value);
-            double endTime = System.nanoTime();
-            double duration = (endTime - startTime)/1000000;
-
-            System.out.println("----------------------------------");
-            System.out.println("Кол-во элементов: " + num_elements);
-            System.out.println("Время мс: " + duration);
-            System.out.println("----------------------------------");
-
-            num_elements+=1000;
-            Biglist.remove_list();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
     private static void testTimestampSort()
     {
-        int num_elements = 1000;
-
-        while (num_elements<=10000)
+        try(FileWriter writer = new FileWriter("testSort.txt", false))
         {
-            BigList Biglist = new BigList();
+            int num_elements = 10000;
 
-            System.out.println("\n-----testTimestampSort-----");
-
-            for (int j = 0; j < 10; j++)
+            while (num_elements<=50000)
             {
-                Biglist.push(new SmallList());
+                BigList Biglist = new BigList();
 
-                for (int i = 0; i < num_elements/10; i++)
+                System.out.println("\n-----testTimestampSort-----");
+
+                for (int j = 0; j < 10; j++)
                 {
-                    int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
-                    Biglist.push(new Int(value));
+                    Biglist.push(new SmallList());
+
+                    for (int i = 0; i < num_elements/10; i++)
+                    {
+                        int value = ((int) (Math.random() * ((100 - 1) + 1)) + 1) + 1;
+                        Biglist.push(new Int(value));
+                    }
                 }
+
+                long startTime = System.currentTimeMillis();
+                Biglist.sort_list();
+                long endTime = System.currentTimeMillis();
+                long duration = (endTime - startTime);
+
+                System.out.println("----------------------------------");
+                System.out.println("Кол-во элементов: " + num_elements);
+                System.out.println("Время мс: " + duration);
+                System.out.println("----------------------------------");
+
+                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                writer.write(text);
+                writer.append('\n');
+                writer.flush();
+
+                num_elements+=500;
+                Biglist.remove_list();
             }
-
-            long startTime = System.currentTimeMillis();
-            Biglist.sort_list();
-            long endTime = System.currentTimeMillis();
-            long duration = (endTime - startTime);
-
-            System.out.println("----------------------------------");
-            System.out.println("Кол-во элементов: " + num_elements);
-            System.out.println("Время мс: " + duration);
-            System.out.println("----------------------------------");
-
-            num_elements+=1000;
-            Biglist.remove_list();
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException(e);
         }
     }
 
