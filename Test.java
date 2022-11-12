@@ -21,7 +21,7 @@ public class Test {
 
     private static void testTimestampInsertOnPosition()
     {
-        try(FileWriter writer = new FileWriter("testInsertOnPos.txt", false))
+        try(FileWriter writer = new FileWriter("testInsertOnPos.csv", false))
         {
             int num_elements = 10000;
 
@@ -29,7 +29,7 @@ public class Test {
             {
                 BigList Biglist = new BigList();
 
-                System.out.println("\n-----testTimestampSort-----");
+                System.out.println("\n-----testTimestampInsertOnPosition-----");
 
                 for (int j = 0; j < 10; j++)
                 {
@@ -53,7 +53,7 @@ public class Test {
                 System.out.println("Время мс: " + duration);
                 System.out.println("----------------------------------");
 
-                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                String text = num_elements+","+duration;
                 writer.write(text);
                 writer.append('\n');
                 writer.flush();
@@ -78,7 +78,7 @@ public class Test {
             {
                 BigList Biglist = new BigList();
 
-                System.out.println("\n-----testTimestampSort-----");
+                System.out.println("\n-----testTimestampGetOnPosition-----");
 
                 for (int j = 0; j < 10; j++)
                 {
@@ -102,7 +102,7 @@ public class Test {
                 System.out.println("Время мс: " + duration);
                 System.out.println("----------------------------------");
 
-                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                String text = num_elements+","+duration;
                 writer.write(text);
                 writer.append('\n');
                 writer.flush();
@@ -119,11 +119,11 @@ public class Test {
 
     private static void testTimestampSort()
     {
-        try(FileWriter writer = new FileWriter("testSort.txt", false))
+        try(FileWriter writer = new FileWriter("testSort.csv", false))
         {
-            int num_elements = 10000;
+            int num_elements = 1000;
 
-            while (num_elements<=50000)
+            while (num_elements<=20000)
             {
                 BigList Biglist = new BigList();
 
@@ -150,7 +150,7 @@ public class Test {
                 System.out.println("Время мс: " + duration);
                 System.out.println("----------------------------------");
 
-                String text = "Кол-во элементов: " + num_elements + "\nВремя мс: " + duration + "\n";
+                String text = num_elements+","+duration;
                 writer.write(text);
                 writer.append('\n');
                 writer.flush();
