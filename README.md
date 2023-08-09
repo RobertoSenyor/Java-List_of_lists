@@ -20,7 +20,7 @@
 
 Каждый столбец синих и зеленых прямоугольников принимает N отсортированных последовательностей (на самом первом шаге 16 отсортированных последовательностей, состоящих из 1 элемента) и преобразует их в N/2 отсортированных последовательностей.
 
-![9fb3850c5dfde07c475a66f874e140b3.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/38170548b93f480ab6ddb9ef5a4dc2a2.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/2.png)
 
 По горизонтали указано количество элементов в структуре данных, а по вертикали время в мс.
 
@@ -28,15 +28,15 @@
 
 ## Тестирование сортировки слиянием
 
-![976c9ccb5cbf246dc0dd1565e80d402c.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/a9f45b0df3944f9f84b32fc1922643f2.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/3.png)
 
 Рассмотрим подробнее тестирование операции сортировки структуры данных. Начальная размерность структуры — 1000 элементов, конечная размерность — 500 тыс. элементов, шаг — 10 тыс.
 
-![1bf3577cb9a3dbee7ddbf970b2425db7.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/2177cd87e536477eb7cc4f561cfc6aaa.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/4.png)
 
 На оси ординат показаны результаты замеренного времени в миллисекундах, на оси абсцисс размерности структуры данных. Предположительная временная затрата сортировки меньше, чем O(n).
 
-![5f8e1f498772e38f09bb0d77692c8633.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/da89f6c5fedf4190b75167ecc8cf801a.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/5.png)
 
 Тестирование операции сортировки структуры данных. Начальная размерность структуры — 1000 элементов, конечная размерность — 500 тыс. элементов, шаг — 1 тыс. На оси ординат показаны результаты замеренного времени в миллисекундах, на оси абсцисс размерности структуры данных.
 
@@ -44,7 +44,7 @@
 
 ## Тестирование вставки в структуру данных
 
-![5bb64261c7eeff1dc0e85a11dec3baea.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/205ee901bef3488aabd736fc17072181.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/6.png)
 
 По горизонтали указано количество элементов в структуре данных, а по вертикали время в мс.
 
@@ -52,7 +52,7 @@
 
 ## Тестирование получения по индексу
 
-![](/home/roman/Изображения/1.png)
+![image](https://github.com/RobertoSenyor/Java-List_of_lists/blob/Java_ver_%234/7.png)
 
 По горизонтали указано количество элементов в структуре данных, а по вертикали время в мс.
 
