@@ -52,7 +52,7 @@
 
 ## Тестирование получения по индексу
 
-![aec4e83a1212ee0ad6436f153566aa2d.png](file:///home/roman/snap/joplin-desktop/35/.config/joplin-desktop/resources/321a7a5cf99b48b580dc15032916958b.png)
+![](/home/roman/Изображения/1.png)
 
 По горизонтали указано количество элементов в структуре данных, а по вертикали время в мс.
 
